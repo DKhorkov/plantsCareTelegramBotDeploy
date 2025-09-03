@@ -1,0 +1,49 @@
+services:
+  plants_care_bot:
+    container_name: plants_care_bot
+    image: d3m0s/plants_care_bot:latest
+    env_file:
+      - .env
+    depends_on:
+      - database
+    volumes:
+      - ./logs/:/app/logs/
+    networks:
+      - plants_care_bot_network
+
+  database:
+    container_name: database
+    hostname: database
+    image: postgres:latest
+    restart: always
+    env_file:
+      - .env
+    volumes:
+      - ./postgres_data:/var/lib/postgresql/data
+      - ./postgres_backups:/backups
+      - ./scripts/postgres:/scripts
+    ports:
+      - "${DB_OUTER_PORT}:${DB_INNER_PORT}"
+    networks:
+      - plants_care_bot_network
+
+  backup_cron:
+    image: ubuntu:24.04
+    container_name: backup_cron
+    depends_on:
+      - database
+    volumes:
+    - ./postgres_backups:/backups
+    - ./scripts/postgres:/scripts
+    - ./backup_cron_entrypoint.sh:/entrypoint.sh # ← монтируем скрипт
+    env_file:
+      - .env
+    entrypoint: /bin/bash /entrypoint.sh
+    restart: unless-stopped
+    networks:
+      - plants_care_bot_network
+
+networks:
+  plants_care_bot_network:
+    name: plants_care_bot_network
+    external: true
