@@ -65,6 +65,66 @@ tasks:
       - go install github.com/pressly/goose/v3/cmd/goose@latest
       - goose -dir {{.DIR}} {{.DRIVER}} {{.DATABASE_URL}} up
 
+  migrate_to:
+    desc: "Migrate up to a specific version."
+    requires:
+      vars: [ VERSION ]
+    dotenv:
+      - .env
+    vars:
+      DIR: ./migrations
+      DRIVER: $POSTGRES_DRIVER
+      DATABASE_URL: "postgresql://$POSTGRES_USER:$POSTGRES_PASSWORD@$DB_OUTER_HOST:$DB_OUTER_PORT/$POSTGRES_DB"
+    dir: ../
+    cmds:
+      - go install github.com/pressly/goose/v3/cmd/goose@latest
+      - goose -dir {{.DIR}} {{.DRIVER}} {{.DATABASE_URL}} up-to {{.VERSION}}
+
+  downgrade_to:
+    desc: "Rollback migrations to a specific version."
+    requires:
+      vars: [ VERSION ]
+    dotenv:
+      - .env
+    vars:
+      DIR: ./migrations
+      DRIVER: $POSTGRES_DRIVER
+      DATABASE_URL: "postgresql://$POSTGRES_USER:$POSTGRES_PASSWORD@$DB_OUTER_HOST:$DB_OUTER_PORT/$POSTGRES_DB"
+    dir: ../
+    cmds:
+      - go install github.com/pressly/goose/v3/cmd/goose@latest
+      - goose -dir {{.DIR}} {{.DRIVER}} {{.DATABASE_URL}} down-to {{.VERSION}}
+
+  downgrade_to_base:
+    desc: "Rollback all migrations (careful!)."
+    aliases:
+      - drop_tables
+    dotenv:
+      - .env
+    vars:
+      DIR: ./migrations
+      DRIVER: $POSTGRES_DRIVER
+      DATABASE_URL: "postgresql://$POSTGRES_USER:$POSTGRES_PASSWORD@$DB_OUTER_HOST:$DB_OUTER_PORT/$POSTGRES_DB"
+    dir: ../
+    cmds:
+      - go install github.com/pressly/goose/v3/cmd/goose@latest
+      - goose -dir {{.DIR}} {{.DRIVER}} {{.DATABASE_URL}} down-to 0
+
+  migrations_status:
+    desc: "Print status of all migrations."
+    aliases:
+      - status
+    dotenv:
+      - .env
+    vars:
+      DIR: ./migrations
+      DRIVER: $POSTGRES_DRIVER
+      DATABASE_URL: "postgresql://$POSTGRES_USER:$POSTGRES_PASSWORD@$DB_OUTER_HOST:$DB_OUTER_PORT/$POSTGRES_DB"
+    dir: ../
+    cmds:
+      - go install github.com/pressly/goose/v3/cmd/goose@latest
+      - goose -dir {{.DIR}} {{.DRIVER}} {{.DATABASE_URL}} status
+
   down:
     desc: "Shutdown all microservices and theirs dependencies."
     dir: ../
