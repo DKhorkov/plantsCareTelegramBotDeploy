@@ -36,7 +36,7 @@ bench.txt
 grafana/
 prometheus.yml
 postgres_data
-backups
+postgres_backups
 
 # Environments
 .venv

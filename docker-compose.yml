@@ -20,7 +20,7 @@ services:
       - .env
     volumes:
       - ./postgres_data:/var/lib/postgresql/data
-      - ./backups:/backups
+      - ./postgres_backups:/backups
       - ./scripts/postgres:/scripts
     ports:
       - "${DB_OUTER_PORT}:${DB_INNER_PORT}"
@@ -33,7 +33,7 @@ services:
     depends_on:
       - database
     volumes:
-    - ./backups:/backups
+    - ./postgres_backups:/backups
     - ./scripts/postgres:/scripts
     - ./backup_cron_entrypoint.sh:/entrypoint.sh # ← монтируем скрипт
     env_file:

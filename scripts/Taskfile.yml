@@ -144,7 +144,7 @@ tasks:
       - sudo rm -rf logs/
       - sudo rm -rf migrations/
       - sudo rm -rf postgres_data/
-      - sudo rm -rf backups/
+      - sudo rm -rf postgres_backups/
       - task: docker_clean
 
   docker_clean:
