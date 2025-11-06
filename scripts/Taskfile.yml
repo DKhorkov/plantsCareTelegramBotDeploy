@@ -2,7 +2,7 @@ version: '3'
 
 tasks:
   up:
-    desc: "Run all microservices and theirs dependencies."
+    desc: "Runs bot and its dependencies."
     dir: ../
     cmds:
       # Prepare infrastructure:
@@ -189,3 +189,14 @@ tasks:
           echo "Восстановление из резервной копии: {{.BACKUP_FILENAME}}"
           sudo docker exec database /scripts/restore.sh {{.BACKUP_FILENAME}}
         fi
+
+  reboot:
+    desc: "Reboots bot and its dependencies."
+    dir: ../
+    cmds:
+      - export PATH=$PATH:$HOME/go/bin
+      - source ~/.bashrc
+      - task: down
+      - task: docker_clean
+      - task: network
+      - task: up
