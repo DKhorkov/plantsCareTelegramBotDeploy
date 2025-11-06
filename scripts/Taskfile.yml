@@ -125,7 +125,7 @@ tasks:
       - goose -dir {{.DIR}} {{.DRIVER}} {{.DATABASE_URL}} status
 
   down:
-    desc: "Shutdown all microservices and theirs dependencies."
+    desc: "Shutdown bot and its dependencies."
     dir: ../
     cmds:
       - task: docker_stop
